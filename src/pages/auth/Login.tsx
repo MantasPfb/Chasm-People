@@ -1,19 +1,30 @@
 import { useState, type FormEvent } from 'react'
+import { Navigate, useNavigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabaseClient'
+import { useAuth } from '@/hooks/useAuth'
 
 export default function Login() {
+  const { session, loading: authLoading } = useAuth()
+  const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+
+  // Already signed in (e.g. navigated back to /login manually) — don't show the form.
+  if (!authLoading && session) return <Navigate to="/dashboard" replace />
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     setError(null)
     setLoading(true)
     const { error: signInError } = await supabase.auth.signInWithPassword({ email, password })
-    if (signInError) setError(signInError.message)
     setLoading(false)
+    if (signInError) {
+      setError(signInError.message)
+      return
+    }
+    navigate('/dashboard', { replace: true })
   }
 
   return (
