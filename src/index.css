@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    @apply bg-canvas text-ink font-sans;
+  }
+  h1 {
+    @apply font-display;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-surface border border-border rounded-md;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded bg-accent text-white text-sm font-medium px-4 py-2 hover:bg-accent-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded border border-border text-ink text-sm font-medium px-4 py-2 hover:bg-canvas transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .input {
+    @apply w-full rounded border border-border bg-surface px-3 py-2 text-sm text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent;
+  }
+  .label {
+    @apply block text-sm font-medium text-ink-muted mb-1;
+  }
+
+  /* Org chart tree connectors */
+  .org-root {
+    @apply inline-flex flex-col items-center;
+  }
+  .org-children-wrap {
+    @apply relative pt-7;
+  }
+  .org-children-wrap::before {
+    content: '';
+    @apply absolute top-0 left-1/2 w-px h-7 bg-border-strong -translate-x-1/2;
+  }
+  .org-children-row {
+    @apply flex justify-center gap-7 relative;
+  }
+  .org-children-row::before {
+    content: '';
+    @apply absolute top-0 left-0 right-0 h-px bg-border-strong;
+  }
+  .org-branch {
+    @apply relative pt-5 flex flex-col items-center;
+  }
+  .org-branch::before {
+    content: '';
+    @apply absolute top-0 left-1/2 w-px h-5 bg-border-strong -translate-x-1/2;
+  }
+  .org-node {
+    @apply bg-surface border border-border rounded-md px-3.5 py-2.5 flex items-center gap-2.5 cursor-pointer min-w-[168px] text-left transition-colors;
+  }
+  .org-node:hover {
+    @apply border-accent;
+  }
+  .org-node-vacancy {
+    @apply bg-transparent border-[1.5px] border-dashed border-critical rounded-md px-3.5 py-2.5 flex items-center gap-2.5 min-w-[150px] text-critical;
+  }
+}
