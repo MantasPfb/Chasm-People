@@ -172,6 +172,42 @@ Visit `http://localhost:5173`, sign in, and you should see the seeded
    Project Settings → Environment Variables.
 4. Deploy.
 
+## 4. CHASM Assistant (optional)
+
+Every authenticated page has a floating assistant button (bottom right) with
+two tabs:
+
+- **Help** — a searchable, hand-written FAQ with "take me there" links to
+  the relevant page. Works immediately, costs nothing, and needs no setup.
+- **Ask AI** — free-text Q&A, answered by Claude via a small serverless
+  function at `api/assistant.ts`. To enable it, add one more environment
+  variable in Vercel:
+  - `ANTHROPIC_API_KEY` — from your Anthropic Console account. **Do not**
+    prefix this with `VITE_` — it must stay server-side only, since the
+    serverless function is the only thing that ever sees it.
+
+  Without this variable set, the Help tab still works fully; the Ask AI tab
+  shows a friendly "not configured yet" message instead of erroring.
+
+**Why this is safe even for a demo environment:** the assistant has no
+database connection, no tools, and no way to query Supabase at all — its
+only source of information is a static description of the app written into
+its system prompt (`api/assistant.ts`). It genuinely cannot leak employee
+data, because there is no path by which it could reach it, not just a
+prompt instruction telling it not to.
+
+**Cost:** low. It uses a small, fast model (`claude-haiku-5-5`) suited to
+short navigational Q&A rather than deep reasoning, and the serverless
+function caps both the conversation history and message length sent per
+request. Check current pricing at
+[anthropic.com/pricing](https://www.anthropic.com/pricing) before relying on
+this for sustained traffic.
+
+**Known limitation:** the per-session message cap (20 messages) is
+client-side and resets on page reload — there's no real server-side rate
+limiting yet. Fine for an internal demo; worth adding (e.g. via Vercel KV or
+Upstash) before this sees genuine public traffic.
+
 ## Security notes
 
 - The `anon` key is designed to be public; every table it can reach is
